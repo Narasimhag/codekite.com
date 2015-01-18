@@ -1,0 +1,15 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	
+<script>
+
+	$.ajax({
+    type: 'GET',
+    // make sure you respect the same origin policy with this url:
+    // http://en.wikipedia.org/wiki/Same_origin_policy
+    url: 'http://localhost/codekite.com/pagecode/autoupdate.php',
+    data: 'foo=asddas&bar=qwqwqweq',
+    success: function(msg){
+        alert('wow' + msg);
+    }
+});
+</script>

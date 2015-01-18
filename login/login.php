@@ -1,48 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Login</title>
-	<link rel="stylesheet" type="text/css" href="../css/paper.css">
-	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-</head>
-<body>
+<?php
+session_start(); // Starting Session
+$error=''; // Variable To Store Error Message
+if (isset($_POST['submit'])) {
+if (empty($_POST['username']) || empty($_POST['password'])) {
+$error = "Username or Password is invalid";
+echo $error;
+}
+else
+{
+// Define $username and $password
+$username=$_POST['username'];
+$password=$_POST['password'];
+// Establishing Connection with Server by passing server_name, user_id and password as a parameter
+$connection = mysql_connect("localhost", "codekite", "codekite");
+// To protect MySQL injection for Security purpose
+$username = stripslashes($username);
+$password = stripslashes($password);
+$username = mysql_real_escape_string($username);
+$password = mysql_real_escape_string($password);
+// Selecting Database
+$db = mysql_select_db("codekite", $connection);
+// SQL query to fetch information of registerd users and finds user match.
+$query = mysql_query("select * from users where password='$password' AND user_name='$username'", $connection);
+$rows = mysql_num_rows($query);
+if ($rows == 1) {
+$_SESSION['user_name'] = $username;
 
-	<div class = "row">
-		<!--<div class = "container">
-			<div class="jumbotron">
-				
-			</div>
-		</div>-->
-		<div class = "col-md-6 col-md-offset-3">
+$row = mysql_fetch_assoc($query);
+$_SESSION['user_id'] =$row['user_id'];
 
-			<div class = "well"> 
-				<img src="" alt="A big image" class="img-responsive">
-				<form class="form-horizontal" role="form">
-			  		<div class="form-group">
-			    		<label for="emailid" class="col-sm-2 control-label col-sm-offset-2">Email</label>
-			    		<div class="col-sm-6">
-			      			<input type="email" class="form-control" id="emailid" placeholder="Email">
-			    		</div>
-			  		</div>
-			  		<div class="form-group">
-			    		<label for="userpass" class="col-sm-2 control-label col-sm-offset-2">Password</label>
-			    		<div class="col-sm-6">
-			      			<input type="password" class="form-control" id="userpass" placeholder="Password">
-			    		</div>
-			  		</div>
-			  		<div class="form-group">
-			    		<div class="col-sm-offset-4 col-md-8 ">
-			      			<a type="submit" class="btn btn-success"href="#">Sign in</a>
-			      			<a type="submit" class="btn btn-info" href="../signup/signup.html">Sign Up &gt;&gt;</a>
-			    		</div>
-
-			  		</div>
-				</form>
-			</div>
-		</div>
-	</div>
-		
-</body>
-</html>
+header("location: ../index.php"); // Redirecting To Other Page
+} else {
+$error = "Username or Password is invalid";
+}
+mysql_close($connection); // Closing Connection
+}
+}
+?>
